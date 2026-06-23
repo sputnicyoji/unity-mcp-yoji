@@ -37,15 +37,19 @@ htmlcov/
 coverage.xml
 *.cover
 
-# Unity generated files
-Library/
-Temp/
-Obj/
-Build/
-Builds/
-Logs/
-UserSettings/
+# Unity generated files at project root
+/Library/
+/Temp/
+/Obj/
+/Build/
+/Builds/
+/Logs/
+/UserSettings/
 *.unitypackage
+
+# Keep package source folders named Build trackable.
+!/Editor/Tools/Build/
+!/Editor/Tools/Build/**
 
 # Local backups
 *.backup

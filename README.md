@@ -53,6 +53,11 @@ Unity Editor <-> local Python server
 127.0.0.1 only by default
 ```
 
+边界：
+
+- 显式调用 `unity_docs` 等文档工具时，会访问 Unity 官方文档。
+- 显式配置 HTTP Remote / API key validation 时，会访问用户配置的远端服务。
+
 ## 保留内容
 
 保留运行必需内容：

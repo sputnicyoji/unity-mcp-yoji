@@ -355,8 +355,8 @@ namespace MCPForUnity.Editor.Helpers
         /// <returns>The package source arguments.</returns>
         public static string GetBetaServerFromArgs(bool quoteFromPath = false)
         {
-            string gitUrlOverride = EditorPrefs.GetString(EditorPrefKeys.GitUrlOverride, "");
             string packageSource = GetMcpServerPackageSource();
+            string gitUrlOverride = EditorPrefs.GetString(EditorPrefKeys.GitUrlOverride, "");
             return GetBetaServerFromArgs(gitUrlOverride, packageSource, quoteFromPath);
         }
 
@@ -395,8 +395,8 @@ namespace MCPForUnity.Editor.Helpers
         /// <returns>List of arguments to add to uvx command</returns>
         public static System.Collections.Generic.IList<string> GetBetaServerFromArgsList()
         {
-            string gitUrlOverride = EditorPrefs.GetString(EditorPrefKeys.GitUrlOverride, "");
             string packageSource = GetMcpServerPackageSource();
+            string gitUrlOverride = EditorPrefs.GetString(EditorPrefKeys.GitUrlOverride, "");
             return GetBetaServerFromArgsList(gitUrlOverride, packageSource);
         }
 
