@@ -8,13 +8,13 @@ namespace MCPForUnity.Editor.Clients
     /// </summary>
     public static class McpClientRegistry
     {
-        private static readonly IReadOnlyList<IMcpClientConfigurator> SupportedClients =
+        private static readonly IReadOnlyList<IMcpClientConfigurator> k_SupportedClients =
             new List<IMcpClientConfigurator>
             {
                 new ClaudeCodeConfigurator(),
                 new CodexConfigurator(),
             };
 
-        public static IReadOnlyList<IMcpClientConfigurator> All => SupportedClients;
+        public static IReadOnlyList<IMcpClientConfigurator> All => k_SupportedClients;
     }
 }

@@ -18,7 +18,8 @@ namespace MCPForUnity.Editor.Migrations
     [InitializeOnLoad]
     internal static class StdIoVersionMigration
     {
-        private const string LastUpgradeKey = EditorPrefKeys.LastStdIoUpgradeVersion;
+        private const string c_LastUpgradeKey = EditorPrefKeys.LastStdIoUpgradeVersion;
+        private const string c_MigrationMarkerSuffix = "codex-stdio-toml-v1";
 
         static StdIoVersionMigration()
         {
@@ -39,9 +40,10 @@ namespace MCPForUnity.Editor.Migrations
             }
 
             string lastUpgradeVersion = string.Empty;
-            try { lastUpgradeVersion = EditorPrefs.GetString(LastUpgradeKey, string.Empty); } catch { }
+            string migrationMarker = $"{currentVersion}:{c_MigrationMarkerSuffix}";
+            try { lastUpgradeVersion = EditorPrefs.GetString(c_LastUpgradeKey, string.Empty); } catch { }
 
-            if (string.Equals(lastUpgradeVersion, currentVersion, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(lastUpgradeVersion, migrationMarker, StringComparison.OrdinalIgnoreCase))
             {
                 return; // Already refreshed for this package version
             }
@@ -59,7 +61,7 @@ namespace MCPForUnity.Editor.Migrations
 
                     // Handle CLI-based configurators (e.g., Claude Code CLI)
                     // CheckStatus with attemptAutoRewrite=true will auto-reregister if version mismatch
-                    if (configurator is ClaudeCliMcpConfigurator cliConfigurator)
+                    if (configurator is ClaudeCliMcpConfigurator)
                     {
                         var previousStatus = configurator.Status;
                         configurator.CheckStatus(attemptAutoRewrite: true);
@@ -70,11 +72,11 @@ namespace MCPForUnity.Editor.Migrations
                         continue;
                     }
 
-                    // Handle JSON file-based configurators
-                    if (!ConfigUsesStdIo(configurator.Client))
+                    // Handle file-based stdio configurators.
+                    if (!ConfigUsesStdIo(configurator))
                         continue;
 
-                    // Skip clients that don't support the current transport setting —
+                    // Skip clients that don't support the current transport setting.
                     // Configure() would throw for incompatible legacy JSON clients.
                     bool useHttp = EditorConfigurationCache.Instance.UseHttpTransport;
                     if (useHttp && !configurator.Client.SupportsHttpTransport)
@@ -90,31 +92,58 @@ namespace MCPForUnity.Editor.Migrations
                 }
             }
 
-            if (!touchedAny)
-            {
-                // Nothing needed refreshing; still record version so we don't rerun every launch
-                try { EditorPrefs.SetString(LastUpgradeKey, currentVersion); } catch { }
-                return;
-            }
-
             if (hadFailures)
             {
                 McpLog.Warn("Stdio MCP upgrade encountered errors; will retry next session.");
                 return;
             }
 
+            if (!touchedAny)
+            {
+                // Nothing needed refreshing; still record version so we don't rerun every launch
+                try { EditorPrefs.SetString(c_LastUpgradeKey, migrationMarker); } catch { }
+                return;
+            }
+
             try
             {
-                EditorPrefs.SetString(LastUpgradeKey, currentVersion);
+                EditorPrefs.SetString(c_LastUpgradeKey, migrationMarker);
             }
             catch { }
 
             McpLog.Info($"Updated stdio MCP configs to package version {currentVersion}.");
         }
 
-        private static bool ConfigUsesStdIo(McpClient client)
+        private static bool ConfigUsesStdIo(McpClientConfiguratorBase configurator)
         {
-            return JsonConfigUsesStdIo(client);
+            if (configurator is CodexMcpConfigurator)
+            {
+                return CodexConfigUsesStdIo(configurator.Client);
+            }
+
+            return JsonConfigUsesStdIo(configurator.Client);
+        }
+
+        private static bool CodexConfigUsesStdIo(McpClient client)
+        {
+            string configPath = McpConfigurationHelper.GetClientConfigPath(client);
+            if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
+            {
+                return false;
+            }
+
+            try
+            {
+                string toml = File.ReadAllText(configPath);
+                return CodexConfigHelper.TryParseCodexServer(toml, out _, out var args, out var url)
+                       && string.IsNullOrEmpty(url)
+                       && args != null
+                       && args.Length > 0;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private static bool JsonConfigUsesStdIo(McpClient client)

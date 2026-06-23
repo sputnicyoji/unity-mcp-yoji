@@ -21,7 +21,7 @@ namespace MCPForUnity.Editor.Helpers
     /// </summary>
     public static class McpConfigurationHelper
     {
-        private const string LockConfigKey = EditorPrefKeys.LockClientConfig;
+        private const string c_LockConfigKey = EditorPrefKeys.LockClientConfig;
 
         /// <summary>
         /// Writes MCP configuration to the specified path using sophisticated logic
@@ -162,7 +162,7 @@ namespace MCPForUnity.Editor.Helpers
         {
             try
             {
-                return EditorPrefs.GetBool(LockConfigKey, false);
+                return EditorPrefs.GetBool(c_LockConfigKey, false);
             }
             catch
             {
