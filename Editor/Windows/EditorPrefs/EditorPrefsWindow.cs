@@ -35,7 +35,7 @@ namespace MCPForUnity.Editor.Windows
             { EditorPrefKeys.ResumeHttpAfterReload, EditorPrefType.Bool },
             { EditorPrefKeys.ResumeStdioAfterReload, EditorPrefType.Bool },
             { EditorPrefKeys.UseEmbeddedServer, EditorPrefType.Bool },
-            { EditorPrefKeys.LockCursorConfig, EditorPrefType.Bool },
+            { EditorPrefKeys.LockClientConfig, EditorPrefType.Bool },
             { EditorPrefKeys.AutoRegisterEnabled, EditorPrefType.Bool },
             { EditorPrefKeys.SetupCompleted, EditorPrefType.Bool },
             { EditorPrefKeys.SetupDismissed, EditorPrefType.Bool },

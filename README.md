@@ -33,6 +33,11 @@ https://github.com/sputnicyoji/unity-mcp-yoji.git#beta
 3. 打开菜单：`Window > Yoji Unity MCP`。
 4. 使用窗口里的 client 配置或 HTTP server 启动按钮。
 
+支持的 MCP client 只保留：
+
+- Claude Code
+- Codex
+
 第一次启动需要本机有 `uv` / `uvx`。
 服务器从包内 `Server~` 目录启动。
 

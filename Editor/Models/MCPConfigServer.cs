@@ -12,7 +12,7 @@ namespace MCPForUnity.Editor.Models
         [JsonProperty("args")]
         public string[] args;
 
-        // VSCode expects a transport type; include only when explicitly set
+        // Some JSON clients expect a transport type; include only when explicitly set
         [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
         public string type;
 

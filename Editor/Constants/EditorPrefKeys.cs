@@ -41,7 +41,8 @@ namespace MCPForUnity.Editor.Constants
 
         internal const string ServerSrc = "MCPForUnity.ServerSrc";
         internal const string UseEmbeddedServer = "MCPForUnity.UseEmbeddedServer";
-        internal const string LockCursorConfig = "MCPForUnity.LockCursorConfig";
+        // Keep the persisted key value stable for existing installations.
+        internal const string LockClientConfig = "MCPForUnity.LockCursorConfig";
         internal const string AutoRegisterEnabled = "MCPForUnity.AutoRegisterEnabled";
         internal const string ToolEnabledPrefix = "MCPForUnity.ToolEnabled.";
         internal const string ToolFoldoutStatePrefix = "MCPForUnity.ToolFoldout.";

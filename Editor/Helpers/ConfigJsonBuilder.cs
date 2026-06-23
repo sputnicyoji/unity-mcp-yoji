@@ -16,12 +16,12 @@ namespace MCPForUnity.Editor.Helpers
         public static string BuildManualConfigJson(string uvPath, McpClient client)
         {
             var root = new JObject();
-            bool isVSCode = client?.IsVsCodeLayout == true;
+            bool usesServersLayout = client?.UsesServersLayout == true;
             if (!string.IsNullOrEmpty(client?.SchemaUrl)) root["$schema"] = client.SchemaUrl;
-            JObject container = EnsureObject(root, GetContainerKey(client, isVSCode));
+            JObject container = EnsureObject(root, GetContainerKey(client, usesServersLayout));
 
             var unity = new JObject();
-            PopulateUnityNode(unity, uvPath, client, isVSCode);
+            PopulateUnityNode(unity, uvPath, client, usesServersLayout);
 
             container["unityMCP"] = unity;
 
@@ -31,11 +31,11 @@ namespace MCPForUnity.Editor.Helpers
         public static JObject ApplyUnityServerToExistingConfig(JObject root, string uvPath, McpClient client)
         {
             if (root == null) root = new JObject();
-            bool isVSCode = client?.IsVsCodeLayout == true;
+            bool usesServersLayout = client?.UsesServersLayout == true;
             if (!string.IsNullOrEmpty(client?.SchemaUrl) && root["$schema"] == null) root["$schema"] = client.SchemaUrl;
-            JObject container = EnsureObject(root, GetContainerKey(client, isVSCode));
+            JObject container = EnsureObject(root, GetContainerKey(client, usesServersLayout));
             JObject unity = container["unityMCP"] as JObject ?? new JObject();
-            PopulateUnityNode(unity, uvPath, client, isVSCode);
+            PopulateUnityNode(unity, uvPath, client, usesServersLayout);
 
             container["unityMCP"] = unity;
             return root;
@@ -46,9 +46,9 @@ namespace MCPForUnity.Editor.Helpers
         /// - Sets command/args with uvx and package version
         /// - Ensures env exists
         /// - Adds transport configuration (HTTP or stdio)
-        /// - Adds disabled:false for Windsurf/Kiro only when missing
+        /// - Preserves existing fields unless this package owns them
         /// </summary>
-        private static void PopulateUnityNode(JObject unity, string uvPath, McpClient client, bool isVSCode)
+        private static void PopulateUnityNode(JObject unity, string uvPath, McpClient client, bool usesServersLayout)
         {
             // Get transport preference (default to HTTP)
             bool prefValue = EditorConfigurationCache.Instance.UseHttpTransport;
@@ -93,10 +93,8 @@ namespace MCPForUnity.Editor.Helpers
                     if (unity["headers"] != null) unity.Remove("headers");
                 }
 
-                // Per-client override of the HTTP "type" value: Cline/Roo expect "streamableHttp"
-                // and Kilo expects "remote"; both fall back to stdio when they see the generic
-                // "http". Defaults to "http" (standard MCP protocol field) when unset, so clients
-                // don't default to SSE on seeing a URL without a type.
+                // Honor explicit client metadata for legacy JSON configurations.
+                // Defaults to "http" when unset so clients do not infer SSE from a bare URL.
                 unity["type"] = string.IsNullOrEmpty(client?.HttpTypeValue) ? "http" : client.HttpTypeValue;
             }
             else
@@ -113,8 +111,8 @@ namespace MCPForUnity.Editor.Helpers
                 if (unity["url"] != null) unity.Remove("url");
                 if (unity["serverUrl"] != null) unity.Remove("serverUrl");
 
-                // Include type for all clients — standard MCP protocol field. A few clients use a
-                // different token for local transport (e.g. Kilo uses "local").
+                // Include type for all clients as a standard MCP protocol field.
+                // Legacy clients may override the local transport token.
                 unity["type"] = string.IsNullOrEmpty(client?.StdioTypeValue) ? "stdio" : client.StdioTypeValue;
             }
 
@@ -145,9 +143,9 @@ namespace MCPForUnity.Editor.Helpers
             }
         }
 
-        private static string GetContainerKey(McpClient client, bool isVSCode)
+        private static string GetContainerKey(McpClient client, bool usesServersLayout)
         {
-            if (isVSCode) return "servers";
+            if (usesServersLayout) return "servers";
             return string.IsNullOrEmpty(client?.ServerContainerKey) ? "mcpServers" : client.ServerContainerKey;
         }
 

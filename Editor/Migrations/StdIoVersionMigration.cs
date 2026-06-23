@@ -75,7 +75,7 @@ namespace MCPForUnity.Editor.Migrations
                         continue;
 
                     // Skip clients that don't support the current transport setting —
-                    // Configure() would throw (e.g., Claude Desktop when HTTP is enabled).
+                    // Configure() would throw for incompatible legacy JSON clients.
                     bool useHttp = EditorConfigurationCache.Instance.UseHttpTransport;
                     if (useHttp && !configurator.Client.SupportsHttpTransport)
                         continue;
@@ -130,7 +130,7 @@ namespace MCPForUnity.Editor.Migrations
                 var root = JObject.Parse(File.ReadAllText(configPath));
 
                 JToken unityNode = null;
-                if (client.IsVsCodeLayout)
+                if (client.UsesServersLayout)
                 {
                     unityNode = root.SelectToken("servers.unityMCP")
                                ?? root.SelectToken("mcp.servers.unityMCP");

@@ -21,7 +21,7 @@ namespace MCPForUnity.Editor.Helpers
     /// </summary>
     public static class McpConfigurationHelper
     {
-        private const string LOCK_CONFIG_KEY = EditorPrefKeys.LockCursorConfig;
+        private const string LockConfigKey = EditorPrefKeys.LockClientConfig;
 
         /// <summary>
         /// Writes MCP configuration to the specified path using sophisticated logic
@@ -29,13 +29,10 @@ namespace MCPForUnity.Editor.Helpers
         /// </summary>
         public static string WriteMcpConfiguration(string configPath, McpClient mcpClient = null)
         {
-            // 0) Respect explicit lock (hidden pref or UI toggle)
-            try
+            if (IsConfigWriteLocked())
             {
-                if (EditorPrefs.GetBool(LOCK_CONFIG_KEY, false))
-                    return "Skipped (locked)";
+                return "Skipped (locked)";
             }
-            catch { }
 
             JsonSerializerSettings jsonSettings = new() { Formatting = Formatting.Indented };
 
@@ -79,10 +76,10 @@ namespace MCPForUnity.Editor.Helpers
             // Determine existing entry references (command/args)
             string existingCommand = null;
             string[] existingArgs = null;
-            bool isVSCode = (mcpClient?.IsVsCodeLayout == true);
+            bool usesServersLayout = (mcpClient?.UsesServersLayout == true);
             try
             {
-                if (isVSCode)
+                if (usesServersLayout)
                 {
                     existingCommand = existingConfig?.servers?.unityMCP?.command?.ToString();
                     existingArgs = existingConfig?.servers?.unityMCP?.args?.ToObject<string[]>();
@@ -121,12 +118,10 @@ namespace MCPForUnity.Editor.Helpers
         /// </summary>
         public static string ConfigureCodexClient(string configPath, McpClient mcpClient)
         {
-            try
+            if (IsConfigWriteLocked())
             {
-                if (EditorPrefs.GetBool(LOCK_CONFIG_KEY, false))
-                    return "Skipped (locked)";
+                return "Skipped (locked)";
             }
-            catch { }
 
             string existingToml = string.Empty;
             if (File.Exists(configPath))
@@ -161,6 +156,18 @@ namespace MCPForUnity.Editor.Helpers
             WriteAtomicFile(configPath, updatedToml);
 
             return "Configured successfully";
+        }
+
+        private static bool IsConfigWriteLocked()
+        {
+            try
+            {
+                return EditorPrefs.GetBool(LockConfigKey, false);
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         /// <summary>

@@ -142,7 +142,7 @@ namespace MCPForUnity.Editor.Clients
         }
     }
 
-    /// <summary>JSON-file based configurator (Cursor, Windsurf, VS Code, etc.).</summary>
+    /// <summary>JSON-file based configurator retained for internal helpers; not exposed in this fork.</summary>
     public abstract class JsonFileMcpConfigurator : McpClientConfiguratorBase
     {
         public JsonFileMcpConfigurator(McpClient client) : base(client) { }
@@ -175,7 +175,7 @@ namespace MCPForUnity.Editor.Clients
                     {
                         string containerKey = string.IsNullOrEmpty(client.ServerContainerKey)
                             ? "mcpServers" : client.ServerContainerKey;
-                        unityToken = client.IsVsCodeLayout
+                        unityToken = client.UsesServersLayout
                             ? rootConfig["servers"]?["unityMCP"]
                                 ?? rootConfig["mcp"]?["servers"]?["unityMCP"]
                             : rootConfig[containerKey]?["unityMCP"];
@@ -191,9 +191,8 @@ namespace MCPForUnity.Editor.Clients
                             args = argsToken.ToObject<string[]>();
                         }
 
-                        // Clients diverge on the HTTP URL property name: "url" (Cursor/VSCode/Claude),
-                        // "serverUrl" (Antigravity/Windsurf), "httpUrl" (Gemini CLI). Accept all three
-                        // so CheckStatus matches what Configure() actually wrote.
+                        // Legacy JSON clients used different HTTP URL property names.
+                        // Accept historical forms so CheckStatus matches prior configs.
                         var urlToken = unityObj["url"] ?? unityObj["serverUrl"] ?? unityObj["httpUrl"];
                         if (urlToken != null && urlToken.Type != JTokenType.Null)
                         {
@@ -356,10 +355,8 @@ namespace MCPForUnity.Editor.Clients
             => client.status == McpStatus.Configured ? "Unregister" : "Configure";
 
         /// <summary>
-        /// Removes the unityMCP entry from the client's JSON config (VS Code-style
-        /// `servers` / `mcp.servers` layouts, the standard `mcpServers` layout, or a
-        /// client-specific container such as Kilo's `mcp`). Leaves the file in place so we
-        /// don't clobber other servers the user has configured.
+        /// Removes the unityMCP entry from legacy JSON config containers.
+        /// Leaves the file in place so we don't clobber other servers the user has configured.
         /// </summary>
         public override void Unregister()
         {
@@ -382,7 +379,7 @@ namespace MCPForUnity.Editor.Clients
                 }
 
                 bool removed = false;
-                if (client.IsVsCodeLayout)
+                if (client.UsesServersLayout)
                 {
                     if ((root["servers"] as JObject)?.Remove("unityMCP") == true) removed = true;
                     if ((root["mcp"]?["servers"] as JObject)?.Remove("unityMCP") == true) removed = true;

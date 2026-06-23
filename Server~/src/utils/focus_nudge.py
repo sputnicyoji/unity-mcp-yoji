@@ -137,7 +137,7 @@ def _get_frontmost_app_macos() -> _FrontmostAppInfo | None:
 
     Returns both process name and bundle ID so we can restore focus precisely.
     Using bundle ID avoids the Electron bug where `tell application "Electron"`
-    launches a standalone Electron instance instead of returning to VS Code.
+    launches a standalone Electron instance instead of returning to the original editor.
     """
     try:
         result = subprocess.run(
@@ -255,7 +255,7 @@ def _focus_app_macos(
         app_name: Application name to focus ("Unity" or specific app name)
         unity_project_path: For Unity apps, the full project root path to match against
             -projectpath command line arg (e.g., "/path/to/project" NOT "/path/to/project/Assets")
-        bundle_id: Bundle identifier for precise activation (e.g. "com.microsoft.VSCode").
+        bundle_id: Bundle identifier for precise activation.
             Preferred over app_name for non-Unity apps.
     """
     try:
@@ -299,8 +299,8 @@ tell application id bundleID to activate
                 return _focus_any_unity_macos()
         else:
             # For non-Unity apps, prefer bundle_id to avoid the Electron bug:
-            # VS Code's process name is "Electron", and `tell application "Electron"`
-            # can launch a standalone Electron instance instead of returning to VS Code.
+            # generic Electron activation can launch a standalone Electron instance
+            # instead of returning to the original editor.
             if bundle_id:
                 escaped_bundle_id = bundle_id.replace('"', '""')
                 result = subprocess.run(
