@@ -1,116 +1,75 @@
-<img width="676" height="380" alt="MCP for Unity" src="docs/images/logo.png" />
+# Yoji Unity MCP
 
-| [English](README.md) | [简体中文](docs/i18n/README-zh.md) |
-|----------------------|---------------------------------|
+个人使用的 Unity Editor MCP bridge。
 
-#### Proudly sponsored and maintained by [Aura](https://www.tryaura.dev/) — the AI assistant for Unreal & Unity.
-##### And don't miss [Godot AI](https://github.com/hi-godot/godot-ai), the new open source MCP/AI project from the makers of MCP for Unity.
+目标很窄：
 
-[![Docs](https://img.shields.io/badge/Docs-unity--mcp-4f46e5)](https://coplaydev.github.io/unity-mcp/)
-[![Discord](https://img.shields.io/badge/discord-join-red.svg?logo=discord&logoColor=white)](https://discord.gg/y4p8KfzrN4)
-[![](https://img.shields.io/badge/Website-Visit-purple)](https://www.coplay.dev/?ref=unity-mcp)
-[![](https://img.shields.io/badge/Unity-000000?style=flat&logo=unity&logoColor=blue 'Unity')](https://unity.com/releases/editor/archive)
-[![python](https://img.shields.io/badge/Python-3.10+-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
-[![](https://badge.mcpx.dev?status=on 'MCP Enabled')](https://modelcontextprotocol.io/introduction)
-[![](https://img.shields.io/badge/License-MIT-red.svg 'MIT License')](https://opensource.org/licenses/MIT)
+- 通过 Git URL 直接安装到 Unity 工程。
+- 使用仓库内置 Python server，不依赖上游 PyPI 包。
+- 移除 telemetry / analytics / external reporting。
+- 不保留上游网站、CI、发布、赞助、MCPB 打包材料。
 
-**Create your Unity apps with LLMs.** MCP for Unity bridges AI assistants — Claude, Codex, VS Code, local LLMs, and more — with your Unity Editor via the [Model Context Protocol](https://modelcontextprotocol.io/introduction). Give your LLM the tools to manage assets, control scenes, edit scripts, run tests, and automate workflows.
+## 安装
 
-<img alt="MCP for Unity building a scene" src="docs/images/building_scene.gif">
-
----
-
-## Read the Docs
-
-### **→ [coplaydev.github.io/unity-mcp](https://coplaydev.github.io/unity-mcp/)**
-
----
-
-## Install
-
-In Unity: **Window → Package Manager → + → Add package from git URL**, paste:
+Unity Package Manager -> Add package from git URL：
 
 ```text
-https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#main
+https://github.com/sputnicyoji/unity-mcp-yoji.git
 ```
 
-Beta channel uses `#beta`. Asset Store and OpenUPM paths are documented in the [Install guide](https://coplaydev.github.io/unity-mcp/getting-started/install).
+如果安装指定分支：
 
-Then **Window → MCP for Unity → Configure All Detected Clients**. That's it — try a prompt:
-
-> Create a red, blue, and yellow cube in the current scene.
-
-Full walkthrough: [Your First Prompt](https://coplaydev.github.io/unity-mcp/getting-started/first-prompt).
-
----
-
-<!-- recent-updates:start -->
-<details>
-<summary><strong>Recent Updates</strong></summary>
-
-* **[v9.7.0](https://github.com/CoplayDev/unity-mcp/releases/tag/v9.7.0)** (2026-05-22)
-* **[v9.6.8](https://github.com/CoplayDev/unity-mcp/releases/tag/v9.6.8)** (2026-04-27)
-* **[v9.6.6](https://github.com/CoplayDev/unity-mcp/releases/tag/v9.6.6)** (2026-04-07)
-* **[v9.6.5](https://github.com/CoplayDev/unity-mcp/releases/tag/v9.6.5)** (2026-04-03)
-* **[v9.6.4](https://github.com/CoplayDev/unity-mcp/releases/tag/v9.6.4)** (2026-03-31)
-
-Full history: [Release Notes](https://coplaydev.github.io/unity-mcp/releases).
-
-</details>
-<!-- recent-updates:end -->
-
----
-
-## Community
-
-- [Discord](https://discord.gg/y4p8KfzrN4) — chat with maintainers and other contributors
-- [Issues](https://github.com/CoplayDev/unity-mcp/issues) — bugs and feature requests
-- [Discussions](https://github.com/CoplayDev/unity-mcp/discussions) — design ideas and broader questions
-- Security: see [SECURITY.md](SECURITY.md) for private reporting
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md). Branch off `beta`, not `main`. The full dev setup, testing, and release process live in the [Contributing](https://coplaydev.github.io/unity-mcp/contributing/dev-setup) docs.
-
-## Advanced
-
-- **Multiple Unity instances** — [Multi-Instance Routing](https://coplaydev.github.io/unity-mcp/guides/multi-instance)
-- **Tool groups (vfx / animation / ui / testing / etc.)** — [Tool Groups](https://coplaydev.github.io/unity-mcp/guides/tool-groups)
-- **Roslyn script validation** — [Roslyn Validation](https://coplaydev.github.io/unity-mcp/guides/roslyn)
-- **Remote-hosted server with auth** — [Remote Server Auth](https://coplaydev.github.io/unity-mcp/guides/remote-server-auth)
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=CoplayDev/unity-mcp&type=Date)](https://www.star-history.com/#CoplayDev/unity-mcp&Date)
-
-## Citation
-
-If MCP for Unity helped your research, please cite it.
-
-```bibtex
-@inproceedings{wu2025mcpunity,
-  author    = {Wu, Shutong and Barnett, Justin P.},
-  title     = {{MCP-Unity}: {Protocol-Driven} Framework for Interactive {3D} Authoring},
-  year      = {2025},
-  isbn      = {9798400721366},
-  publisher = {Association for Computing Machinery},
-  address   = {New York, NY, USA},
-  url       = {https://doi.org/10.1145/3757376.3771417},
-  doi       = {10.1145/3757376.3771417},
-  series    = {SA Technical Communications '25}
-}
+```text
+https://github.com/sputnicyoji/unity-mcp-yoji.git#beta
 ```
 
-## Unity AI Tools by Aura
+本仓库根目录就是 UPM package。
+不需要 `?path=/MCPForUnity`。
 
-Aura offers 2 AI tools for Unity:
-- **MCP for Unity** is available freely under the MIT license.
-- **Aura for Unity** is a premium Unity/Unreal AI assistant built for game devs.
+## 使用
 
-## Disclaimer
+1. 打开 Unity 工程。
+2. 安装本 Git package。
+3. 打开菜单：`Window > Yoji Unity MCP`。
+4. 使用窗口里的 client 配置或 HTTP server 启动按钮。
 
-This project is a free and open-source tool for the Unity Editor, and is not affiliated with Unity Technologies.
+第一次启动需要本机有 `uv` / `uvx`。
+服务器从包内 `Server~` 目录启动。
 
----
+## 隐私
 
-**License:** MIT — see [LICENSE](LICENSE).
+已移除上报链路。
+
+- 没有 external reporting sender。
+- 没有 analytics endpoint。
+- 没有外部统计请求。
+- Unity 侧不会生成或保存 customer UUID。
+- Python server 不会向外发送使用记录。
+
+仍然会有本地网络通信：
+
+```text
+Unity Editor <-> local Python server
+127.0.0.1 only by default
+```
+
+## 保留内容
+
+保留运行必需内容：
+
+```text
+Editor/
+Runtime/
+Server~/
+package.json
+LICENSE
+```
+
+`Server~` 是 UPM 隐藏目录。
+Unity 不编译其中的 Python 文件。
+
+## 许可证
+
+本 fork 仍基于 MIT 代码。
+原始版权声明保留在 `LICENSE`。
+这是 MIT 条款要求。

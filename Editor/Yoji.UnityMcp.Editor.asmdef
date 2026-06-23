@@ -1,0 +1,25 @@
+{
+    "name": "Yoji.UnityMcp.Editor",
+    "rootNamespace": "Yoji.UnityMcp.Editor",
+    "references": [
+        "Yoji.UnityMcp.Runtime"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Newtonsoft.Json.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.visualeffectgraph",
+            "expression": "0.0.0",
+            "define": "UNITY_VFX_GRAPH"
+        }
+    ],
+    "noEngineReferences": false
+}
